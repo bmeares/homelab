@@ -1,0 +1,11 @@
+sync:
+  pipes:
+    - connector: "homelab"
+      metric: "links"
+
+config:
+  default_instance: "api:bmeares"
+  meerschaum:
+    connectors:
+      api:
+        bmeares: MRSM{meerschaum:connectors:api:bmeares}
