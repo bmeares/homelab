@@ -6,7 +6,7 @@
 Build a dashboard to link to my self-hosted services.
 """
 
-__version__ = '0.0.2'
+__version__ = '0.0.3'
 
 import meerschaum as mrsm
 from meerschaum.plugins import dash_plugin, web_page
@@ -18,10 +18,18 @@ def init_dash(dash_app):
 
     import dash_bootstrap_components as dbc
     import dash.html as html
+    from dash import Input, Output, State
     from meerschaum.api.dash.components import build_cards_grid
 
     @web_page('/homelab', login_required=False)
     def homelab_links():
+        return dbc.Container(id='homelab-container')
+
+    @dash_app.callback(
+        Output('homelab-container', 'children'),
+        Input('location', 'href'),
+    )
+    def page_load(href: str):
         try:
             docs = sorted(
                 SERVICES_PIPE.get_data().to_dict(orient='records'),
@@ -69,7 +77,7 @@ def init_dash(dash_app):
         ]
 
 
-        return dbc.Container([
+        return [
             html.H1(
                 "BMeares Homelab Services",
                 style = {
@@ -78,4 +86,4 @@ def init_dash(dash_app):
                 },
             ),
             build_cards_grid(cards, 4),
-        ])
+        ]
